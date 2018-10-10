@@ -1,0 +1,43 @@
+{
+    "name": "shahrukh/payments",
+    "description": ":description",
+    "license": "license",
+    "authors": [
+        {
+            "name": "Shahrukh Anwar",
+            "email": "shahrukh.anwar@hestabit.in",
+            "homepage": "https://github.com/shahrukh4"
+        }
+    ],
+    "homepage": "https://github.com/shahrukh/payments",
+    "keywords": ["Laravel", "Payments"],
+    "require": {
+        "illuminate/support": "~5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0",
+        "mockery/mockery": "^1.1",
+        "orchestra/testbench": "~3.0",
+        "sempro/phpunit-pretty-print": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shahrukh\\Payments\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shahrukh\\Payments\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Shahrukh\\Payments\\PaymentsServiceProvider"
+            ],
+            "aliases": {
+                "Payments": "Shahrukh\\Payments\\Facades\\Payments"
+            }
+        }
+    }
+}
