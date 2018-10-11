@@ -4,7 +4,7 @@ namespace Shahrukh\Payments\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Payments extends Facade
+class Payment extends Facade
 {
     /**
      * Get the registered name of the component.

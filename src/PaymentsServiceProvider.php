@@ -2,6 +2,7 @@
 
 namespace Shahrukh\Payments;
 
+use Cartalyst\Stripe\Stripe;
 use Illuminate\Support\ServiceProvider;
 
 class PaymentsServiceProvider extends ServiceProvider
@@ -29,14 +30,16 @@ class PaymentsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
+    public function register(){
         $this->mergeConfigFrom(__DIR__.'/../config/payments.php', 'payments');
 
         // Register the service the package provides.
         $this->app->singleton('payments', function ($app) {
             return new Payments;
         });
+
+        $this->registerStripe();
+        $this->registerConfig();
     }
 
     /**
@@ -46,7 +49,11 @@ class PaymentsServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['payments'];
+        return [
+            'payments'
+            //'stripe', 
+            //'stripe.config',
+        ];
     }
     
     /**
@@ -78,5 +85,36 @@ class PaymentsServiceProvider extends ServiceProvider
 
         // Registering package commands.
         // $this->commands([]);
+    }
+
+    /**
+     * Register the Stripe API class.
+     *
+     * @return void
+     */
+    protected function registerStripe(){
+        $this->app->singleton('stripe', function ($app) {
+            $config     = $app['config']->get('services.stripe');
+            $secret     = isset($config['secret']) ? $config['secret'] : null;
+            $version    = isset($config['version']) ? $config['version'] : null;
+
+            return new Stripe($secret, $version);
+        });
+
+        $this->app->alias('stripe', 'Cartalyst\Stripe\Stripe');
+    }
+
+    /**
+     * Register the config class.
+     *
+     * @return void
+     */
+    protected function registerConfig(){
+        $this->app->singleton('stripe.config', function ($app) {
+            return $app['stripe']->getConfig();
+        });
+
+        $this->app->alias('stripe.config', 'Cartalyst\Stripe\Config');
+        $this->app->alias('stripe.config', 'Cartalyst\Stripe\ConfigInterface');
     }
 }

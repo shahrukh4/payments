@@ -2,7 +2,8 @@
 
 namespace Shahrukh\Payments;
 
-class Payments
-{
-    // Build wonderful things
+class Payments{
+    public static function shah(){
+    	dd('working');
+    }
 }
