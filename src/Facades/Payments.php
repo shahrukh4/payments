@@ -13,6 +13,6 @@ class Payment extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'payments';
+        return 'Payment';
     }
 }

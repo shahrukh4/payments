@@ -2,8 +2,9 @@
 
 namespace Shahrukh\Payments;
 
-use Cartalyst\Stripe\Stripe;
 use Illuminate\Support\ServiceProvider;
+use Shahrukh\Payments\Repositories\PayPal;
+use Shahrukh\Payments\Repositories\StripePay;
 
 class PaymentsServiceProvider extends ServiceProvider
 {
@@ -34,12 +35,16 @@ class PaymentsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/payments.php', 'payments');
 
         // Register the service the package provides.
-        $this->app->singleton('payments', function ($app) {
+        /*$this->app->singleton('payments', function ($app) {
             return new Payments;
+        });*/
+
+        $this->app->bind(Payment::class, function ($app) {
+            //return new StripePay();
+            return new PayPal();
         });
 
-        $this->registerStripe();
-        $this->registerConfig();
+        $this->app->alias(Payment::class, 'Payment');
     }
 
     /**
@@ -50,7 +55,7 @@ class PaymentsServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'payments'
+            'Payment'
             //'stripe', 
             //'stripe.config',
         ];
