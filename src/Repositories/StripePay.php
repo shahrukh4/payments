@@ -98,4 +98,17 @@ dd($charge);
 
 		return $charge;
 	}
+
+	public function refund(Request $request){
+		try{
+			$stripe = Stripe::make(env('STRIPE_SECRET'));
+
+			$refund = $stripe->refunds()->create('ch_1DK0jWB108n83JtHxlqSCqrK');
+
+			dd($refund);
+		}
+		catch(\Exception $e){
+			dd($e);
+		}
+	}
 }
