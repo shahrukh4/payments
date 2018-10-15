@@ -9,6 +9,11 @@ use Cartalyst\Stripe\Stripe;
 use Shahrukh\Payments\Payment;
 
 class StripePay implements Payment{
+	/**
+	 * [pay description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
     public function pay(Request $request){
 	    $validator = Validator::make($request->all(), [
 			'card_no' 		=> 'required',
@@ -91,6 +96,11 @@ dd($charge);
 		}
 	}
 
+	/**
+	 * [invoice description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function invoice(Request $request){
 		$stripe = Stripe::make(env('STRIPE_SECRET'));
 
@@ -99,6 +109,11 @@ dd($charge);
 		return $charge;
 	}
 
+	/**
+	 * [refund description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function refund(Request $request){
 		try{
 			$stripe = Stripe::make(env('STRIPE_SECRET'));

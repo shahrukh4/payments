@@ -13,9 +13,7 @@
     "keywords": ["Laravel", "Payments"],
     "require": {
         "illuminate/support": "~5",
-        "cartalyst/stripe-laravel": "7.0.*",
-        "league/omnipay": "^3",
-        "omnipay/paypal": "^3.0"
+        "cartalyst/stripe-laravel": "7.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "~7.0",

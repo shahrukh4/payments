@@ -40,8 +40,8 @@ class PaymentsServiceProvider extends ServiceProvider
         });*/
 
         $this->app->bind(Payment::class, function ($app) {
-            return new StripePay();
-            //return new PayPal();
+            //return new StripePay();
+            return new PayPal();
         });
 
         $this->app->alias(Payment::class, 'Payment');
