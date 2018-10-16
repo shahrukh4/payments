@@ -2,21 +2,112 @@
 
 namespace Shahrukh\Payments\Handlers;
 
+use Shahrukh\Payments\Lib\Card;
+use Shahrukh\Payments\Lib\Details;
+use Shahrukh\Payments\Lib\Shipping;
 use Shahrukh\Payments\Contracts\BaseSetter;
 
 class Setter implements BaseSetter{
 	protected $tax;
+	protected $type;
+	protected $card;
 	protected $rules;
 	protected $price;
+	protected $number;
+	protected $intent;
+	protected $amount;
+	protected $reason;
+	protected $details;
 	protected $quantity;
 	protected $currency;
 	protected $item_name;
+	protected $last_name;
 	protected $cancel_url;
+	protected $first_name;
 	protected $return_url;
 	protected $extra_param;
+	protected $expire_year;
 	protected $description;
+	protected $expire_month;
 	protected $payment_method;
 	protected $unique_invoice_num;
+	protected $shipping_details;
+
+
+	/**
+     * @return \PayPal\Api\ShippingAddress
+     */
+	public function shipping(){
+	 	return new Shipping;
+	}
+
+	/**
+     * @return \PayPal\Api\ShippingAddress
+     */
+	public function card(){
+	 	return new Card;
+	}
+
+	/**
+     * @return \PayPal\Api\ShippingAddress
+     */
+	public function details(){
+	 	return new Details;
+	}
+
+	/**
+	 * [setShippingDetails description]
+	 * @param [type] $shipping_details [description]
+	 */
+	public function setShippingDetails($shipping_details){
+		$this->shipping_details = $shipping_details;
+		$this->rules['shipping_details'] = $shipping_details;
+
+		return $this;
+	}
+
+	/**
+	 * [setShippingDetails description]
+	 * @param [type] $shipping_details [description]
+	 */
+	public function setCard($card){
+		$this->card = $card;
+		$this->rules['card'] = $card;
+
+		return $this;
+	}
+
+	/**
+	 * [setShippingDetails description]
+	 * @param [type] $shipping_details [description]
+	 */
+	public function setAmount($amount){
+		$this->amount = $amount;
+		$this->rules['amount'] = $amount;
+
+		return $this;
+	}
+
+	/**
+	 * [setShippingDetails description]
+	 * @param [type] $shipping_details [description]
+	 */
+	public function setReason($reason){
+		$this->reason = $reason;
+		$this->rules['reason'] = $reason;
+
+		return $this;
+	}
+
+	/**
+	 * [setShippingDetails description]
+	 * @param [type] $shipping_details [description]
+	 */
+	public function setDetails($details){
+		$this->details = $details;
+
+		return $this;
+	}
 
 	/**
 	 * [setPaymentMethod description]
@@ -28,7 +119,7 @@ class Setter implements BaseSetter{
 
 		return $this;
 	}
-
+	
 	/**
 	 * [setReturnUrl description]
 	 * @param [type] $return_url [description]
@@ -127,6 +218,19 @@ class Setter implements BaseSetter{
 	}
 
 	/**
+	 * Payment intent.
+ * Valid Values: ["sale", "authorize", "order"] : default -> sale
+	 * @param  string $intent [description]
+	 * @return [type]         [description]
+	 */
+	public function setIntent($intent = 'sale'){
+		$this->intent = $intent;
+		$this->rules['intent'] = $intent;
+
+		return $this;
+	}
+
+	/**
 	 * [setTotal description]
 	 * @param [type] $total [description]
 	 */
@@ -161,6 +265,15 @@ class Setter implements BaseSetter{
 	 */
 	public function getTax(){
 		return !empty($this->tax) ? $this->tax : 0.0;
+	}
+
+	/**
+	 * [getIntent description]
+	 * 
+	 * @return [type] [description]
+	 */
+	public function getIntent(){
+		return !empty($this->intent) ? $this->intent : 'sale';
 	}
 
 	/**
@@ -235,6 +348,10 @@ class Setter implements BaseSetter{
 		return $this->price;
 	}
 
+	public function getReason(){
+		return $this->reason;
+	}
+
 	/**
 	 * [getCancelUrl description]
 	 * @return [type] [description]
@@ -250,6 +367,15 @@ class Setter implements BaseSetter{
 	public function getReturnUrl(){
 		return $this->return_url;
 	}
+	
+	/**
+	 * [getType description]
+	 * @param  [type] $type [description]
+	 * @return [type]       [description]
+	 */
+	public function getType(	){
+		return !empty($this->type) ? $this->type : 'visa';
+	}
 
 	/**
 	 * [getExtraParam description]
@@ -258,6 +384,39 @@ class Setter implements BaseSetter{
 	public function getExtraParam(){
 		return !empty($this->extra_param) ? $this->extra_param : false;
 	}
+
+	/**
+	 * [getShippingDetails description]
+	 * @return [type] [description]
+	 */
+	public function getShippingDetails(){
+		return $this->shipping_details;
+	}
+
+	/**
+	 * [getShippingDetails description]
+	 * @return [type] [description]
+	 */
+	public function getCard(){
+		return $this->card;
+	}
+
+	/**
+	 * [getShippingDetails description]
+	 * @return [type] [description]
+	 */
+	public function getAmount(){
+		return $this->amount;
+	}
+
+	/**
+	 * [getShippingDetails description]
+	 * @return [type] [description]
+	 */
+	public function getDetails(){
+		return $this->details;
+	}
+
 
 	/**
 	 * [setRules description]

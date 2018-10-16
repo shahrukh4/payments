@@ -8,119 +8,124 @@ use Illuminate\Http\Request;
 use Cartalyst\Stripe\Stripe;
 use Shahrukh\Payments\Payment;
 
-class StripePay implements Payment{
+use Shahrukh\Payments\Handlers\Setter;
+
+class StripePay extends Setter implements Payment{
+	public function validator($rules){
+		$args = [];
+
+		if(!empty($rules['card'])){
+			foreach ($rules['card'] as $key => $value) {
+				if(!is_object($value)){
+					$rules[$key] = $value;
+				}
+			}
+		}
+
+		return $rules;
+	}
+
 	/**
 	 * [pay description]
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-    public function pay(Request $request){
-	    $validator = Validator::make($request->all(), [
-			'card_no' 		=> 'required',
-			'ccExpiryMonth' => 'required',
-			'ccExpiryYear'	=> 'required',
-			'cvvNumber' 	=> 'required',
-			//’amount’ => ‘required’,
-		]);
+    public function pay(){
+	    /*$validator = Validator::make($this->rules, [
+			"card.*.number" 		=> 'required',
+			//'expire_month' => 'required',
+			//'expire_year'	=> 'required',
+			//'cvv2' 	=> 'required',
+			'amount' 		=> 'required',
+		]);*/
 
-		$input = $request->all();
+			/**
+			 * If validator fails
+			 */
+			/*if($validator->fails()){
+				return $validator->messages()->toArray();
+			}*/
 
-		if($validator->fails()){//dd($validator->messages());
-			$msg = $validator->messages()->toArray();
-
-			foreach ($msg as $key => $value) {
-				dd($value[0]);
-			}
-		}
-
-		if ($validator->passes()) { 
-			$input = array_except($input,array('	_token'	));
-			$stripe = Stripe::make(env('STRIPE_SECRET'));
+		//if ($validator->passes()) { 
+			//$input = array_except($input,array('	_token'	));
+			$stripe = Stripe::make(config('payments.stripe.secret'));
 
 			try {
 				$token = $stripe->tokens()->create([
 					'card' => [
-						'number' 	=> $request->get('card_no'),
-						'exp_month' => $request->get('ccExpiryMonth'),
-						'exp_year' 	=> $request->get('ccExpiryYear'),
-						'cvc' 		=> $request->get('cvvNumber'),
+						'number' 	=> $this->getCard()->number,
+						'exp_month' => $this->getCard()->expire_month,
+						'exp_year' 	=> $this->getCard()->expire_year,
+						'cvc' 		=> $this->getCard()->cvv2
 					],
 				]);
-
-				// $token = $stripe->tokens()->create([
-				// ‘card’ => [
-				// ‘number’ => 	,
-				// ‘exp_month’ => 10,
-				// ‘cvc’ => 314,
-				// ‘exp_year’ => 2020,
-				// ],
-				// ]);
 				
 				if (!isset($token['id'])) {
-					dd('payment cant create');
-					//return redirect()->route('addmoney.paywithstripe');
+					return 'There are some technical issues, transaction not able to take place';
 				}
 
 				$charge = $stripe->charges()->create([
 					'card' 			=> $token['id'],
-					'currency' 		=> 'USD',
-					'amount' 		=> 2,
-					'description' 	=> 'Testing for stripe wallet',
+					'currency' 		=> $this->getCurrency(),
+					'amount' 		=> $this->getAmount(),
+					'description' 	=> $this->getDescription(),
 				]);
-dd($charge);
-				if($charge['status'] == 'succeeded') {
-					/**
-					* Write Here Your Database insert logic.
-					*/
-					print_r($charge);exit();
-					return redirect()->route('addmoney.paywithstripe');
+
+				if($charge['status'] == 'succeeded') {					
+					return $charge;
 				} 
 				else {
-					\Session::put('error', 'Money not add in wallet!!');
-					return redirect()->route('addmoney.paywithstripe');
+					return 'Not able to connect to Stripe.';
 				}
 			} 
 			catch (\Exception $e) {
 				dd($e);
-				\Session::put('error',$e->getMessage());
-				return redirect()->route('addmoney.paywithstripe');
 			} 
 			catch(\Cartalyst\Stripe\Exception\CardErrorException $e) {
-				\Session::put('error',$e->getMessage());
-				return redirect()->route('addmoney.paywithstripe');
+				dd($e);
 			} 
 			catch(\Cartalyst\Stripe\Exception\MissingParameterException $e) {
-				\Session::put('error',$e->getMessage());
-				return redirect()->route('addmoney.paywithstripe');
+				dd($e);
 			}
-		}
+		//}
 	}
 
 	/**
 	 * [invoice description]
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
+	 * 'ch_1DK0jWB108n83JtHxlqSCqrK'
 	 */
-	public function invoice(Request $request){
-		$stripe = Stripe::make(env('STRIPE_SECRET'));
+	public function invoice($payment_id){
+		try{
+			$stripe = Stripe::make(config('payments.stripe.secret'));
 
-		$charge = $stripe->charges()->find('ch_1DK0jWB108n83JtHxlqSCqrK');
+			$charge = $stripe->charges()
+			->find($payment_id);
 
-		return $charge;
+			return $charge;
+		}
+		catch(\Exception $e){
+			dd($e);
+		}
 	}
 
 	/**
 	 * [refund description]
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
+	 * ch_1DK0jWB108n83JtHxlqSCqrK
 	 */
-	public function refund(Request $request){
+	public function refund($transaction_id){
 		try{
-			$stripe = Stripe::make(env('STRIPE_SECRET'));
+			$stripe = Stripe::make(config('payments.stripe.secret'));
 
-			$refund = $stripe->refunds()->create('ch_1DK0jWB108n83JtHxlqSCqrK');
+			$refund = $stripe->refunds()
+			->create($transaction_id, $this->getAmount(), [
+				'reason' => !empty($this->getReason()) ? $this->getReason() : 'requested_by_customer'
+			]);
 
-			dd($refund);
+			return $refund;
 		}
 		catch(\Exception $e){
 			dd($e);
