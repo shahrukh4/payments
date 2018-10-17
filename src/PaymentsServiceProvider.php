@@ -6,8 +6,13 @@ use Illuminate\Support\ServiceProvider;
 use Shahrukh\Payments\Repositories\PayPal;
 use Shahrukh\Payments\Repositories\StripePay;
 
-class PaymentsServiceProvider extends ServiceProvider
-{
+/*
+|--------------------------------------------------
+| Service provider for handling the control of Payment gateways
+|--------------------------------------------------
+| Written By- Shahrukh Anwar(17-10-2018)
+*/
+class PaymentsServiceProvider extends ServiceProvider{
     /**
      * Perform post-registration booting of services.
      *
@@ -40,8 +45,8 @@ class PaymentsServiceProvider extends ServiceProvider
         });*/
 
         $this->app->bind(Payment::class, function ($app) {
-            return new StripePay();
-            //return new PayPal();
+            //return new StripePay();
+            return new PayPal();
         });
 
         $this->app->alias(Payment::class, 'Payment');

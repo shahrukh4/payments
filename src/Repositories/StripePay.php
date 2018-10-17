@@ -3,51 +3,68 @@
 namespace Shahrukh\Payments\Repositories;
 
 use Validator;
-use Stripe\Error\Card;
-use Illuminate\Http\Request;
 use Cartalyst\Stripe\Stripe;
 use Shahrukh\Payments\Payment;
-
 use Shahrukh\Payments\Handlers\Setter;
 
+/*
+|--------------------------------------------------------------------------
+| Handling all the payment behaviours via Stripe.
+|--------------------------------------------------------------------------|
+| Written By- Shahrukh Anwar(17-10-2018)
+*/
 class StripePay extends Setter implements Payment{
-	public function validator($rules){
-		$args = [];
-
-		if(!empty($rules['card'])){
-			foreach ($rules['card'] as $key => $value) {
-				if(!is_object($value)){
-					$rules[$key] = $value;
-				}
-			}
-		}
-
-		return $rules;
-	}
-
-	/**
-	 * [pay description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
+	/*
+	|--------------------------------------------------------------------------
+	| Payment via Stripe with a given credit card
+	| Written By- Shahrukh Anwar(17-10-2018)
+	|--------------------------------------------------------------------------
+	| @var number 			: integer (Required)
+	| @var expiry_year 		: integer (Required)
+	| @var expiry_month		: integer (Required)
+	| @var cvv				: integer (Required)
+	| @var amount			: integer (Required)
+	| @var description		: string  (Optional) (Default : No description avaliable.)
+	|--------------------------------------------------------------------------
+	| Below is the example, how you can set the objects
+	| //initialising the card object
+	| $card = Payment::card();
+	| $card->setNumber(4242424242424242) 	: integer (Required)
+	| ->setExpireYear(2020) 				: integer (Required)
+	| ->setExpireMonth(06) 					: integer (Required)
+	| ->setCvv(314);						: integer (Required)
+	|	
+	| //making payments
+	| $pay = \Payment::setAmount(1) 		: integer (Required)
+	| ->setDescription('for whatever') 		: string  (Optional)
+	| ->setCard($card)						: object  (Required)
+	| ->pay();
+	*/
     public function pay(){
-	    /*$validator = Validator::make($this->rules, [
-			"card.*.number" 		=> 'required',
-			//'expire_month' => 'required',
-			//'expire_year'	=> 'required',
-			//'cvv2' 	=> 'required',
-			'amount' 		=> 'required',
-		]);*/
+    	try{
+	    	$rules = !empty($this->rules) ? $this->getRules($this->rules) : [];
+
+		    $validator = Validator::make($rules, [
+				'cvv2' 			=> 'required|integer|digits:3',
+				"number" 		=> 'required|integer|min:1',
+				'amount' 		=> 'required|numeric|min:0.1',
+				'expire_year'	=> 'required|integer|min:1|digits:4',
+				'expire_month' 	=> 'required|integer|min:1|max:12|digits_between:1, 2',
+				'description'	=> 'string'
+			], [
+				'number.min'		=> 'Card number must be postive.',
+				'expire_year.min'	=> 'Expire year must be postive.',
+				'expire_month.min'	=> 'Expire month must be postive.',
+				'expire_month.digits_between' => 'Expire month must be two digits.',
+			]);
 
 			/**
 			 * If validator fails
 			 */
-			/*if($validator->fails()){
+			if($validator->fails()){
 				return $validator->messages()->toArray();
-			}*/
+			}
 
-		//if ($validator->passes()) { 
-			//$input = array_except($input,array('	_token'	));
 			$stripe = Stripe::make(config('payments.stripe.secret'));
 
 			try {
@@ -79,23 +96,32 @@ class StripePay extends Setter implements Payment{
 				}
 			} 
 			catch (\Exception $e) {
-				dd($e);
+				return $e;
 			} 
 			catch(\Cartalyst\Stripe\Exception\CardErrorException $e) {
-				dd($e);
+				return $e;
 			} 
 			catch(\Cartalyst\Stripe\Exception\MissingParameterException $e) {
-				dd($e);
+				return $e;
 			}
-		//}
+		}
+		catch(\Exception $e){
+			return $e;
+		}
 	}
 
-	/**
-	 * [invoice description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 * 'ch_1DK0jWB108n83JtHxlqSCqrK'
-	 */
+	/*
+	|--------------------------------------------------------------------------
+	| Getting the details of any given transaction
+	| Written By- Shahrukh Anwar(17-10-2018)
+	|--------------------------------------------------------------------------
+	| @var transaction_id	: integer (Required)
+	|--------------------------------------------------------------------------
+	| Below are the example how you can set the objects
+	| $payment_id = 'ch_1DK0jWB108n83JtHxlqSCqrK';  : Required(fetch this id, when you are making transaction and store it safe)
+	| 	
+    | $payment_details = \Payment::invoice($payment_id);
+	*/
 	public function invoice($payment_id){
 		try{
 			$stripe = Stripe::make(config('payments.stripe.secret'));
@@ -106,16 +132,26 @@ class StripePay extends Setter implements Payment{
 			return $charge;
 		}
 		catch(\Exception $e){
-			dd($e);
+			return $e;
 		}
 	}
 
-	/**
-	 * [refund description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 * ch_1DK0jWB108n83JtHxlqSCqrK
-	 */
+	/*
+	|--------------------------------------------------------------------------
+	| To refund the paid amount
+	| Written By- Shahrukh Anwar(17-10-2018)
+	|--------------------------------------------------------------------------
+	| @var reason 			: string  (Optional) (e.g. duplicate, fraudulent, requested_by_customer) (default : requested_by_customer)
+	| @var amount 			: numeric (Required)
+	| @var transaction_id	: integer (Required)
+	|--------------------------------------------------------------------------
+	| Below are the example how you can set the objects
+	|  
+	| $transaction_id = 'ch_1DK0j1B108n83JtH236d8aH5'; : Required(fetch this id, when you are making transaction and store)
+	| $refund = \Payment::setAmount(1)
+    | ->setReason('duplicate')
+    | ->refund($transaction_id); 
+	*/
 	public function refund($transaction_id){
 		try{
 			$stripe = Stripe::make(config('payments.stripe.secret'));
@@ -128,7 +164,7 @@ class StripePay extends Setter implements Payment{
 			return $refund;
 		}
 		catch(\Exception $e){
-			dd($e);
+			return $e;
 		}
 	}
 }

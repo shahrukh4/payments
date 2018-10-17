@@ -7,6 +7,12 @@ use Shahrukh\Payments\Lib\Details;
 use Shahrukh\Payments\Lib\Shipping;
 use Shahrukh\Payments\Contracts\BaseSetter;
 
+/*
+|--------------------------------------------------------------------------
+| This class is used to set and get various data related to payment
+| Created By- Shahrukh Anwar(08-06-2018)
+|--------------------------------------------------------------------------
+*/
 class Setter implements BaseSetter{
 	protected $tax;
 	protected $type;
@@ -35,29 +41,30 @@ class Setter implements BaseSetter{
 
 
 	/**
-     * @return \PayPal\Api\ShippingAddress
+     * @return Shahrukh\Payments\Lib\Shipping
      */
 	public function shipping(){
 	 	return new Shipping;
 	}
 
 	/**
-     * @return \PayPal\Api\ShippingAddress
+     * @return Shahrukh\Payments\Lib\Card
      */
 	public function card(){
 	 	return new Card;
 	}
 
 	/**
-     * @return \PayPal\Api\ShippingAddress
+     * @return Shahrukh\Payments\Lib\Details
      */
 	public function details(){
 	 	return new Details;
 	}
 
 	/**
-	 * [setShippingDetails description]
-	 * @param [type] $shipping_details [description]
+	 * setter for shipping details
+	 * @param object
+	 * @return object
 	 */
 	public function setShippingDetails($shipping_details){
 		$this->shipping_details = $shipping_details;
@@ -67,8 +74,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setShippingDetails description]
-	 * @param [type] $shipping_details [description]
+	 * setter for card
+	 * @param object
+	 * @return object
 	 */
 	public function setCard($card){
 		$this->card = $card;
@@ -78,8 +86,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setShippingDetails description]
-	 * @param [type] $shipping_details [description]
+	 * setter for amount
+	 * @param number
+	 * @return object
 	 */
 	public function setAmount($amount){
 		$this->amount = $amount;
@@ -89,8 +98,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setShippingDetails description]
-	 * @param [type] $shipping_details [description]
+	 * setter for reason
+	 * @param string
+	 * @return object
 	 */
 	public function setReason($reason){
 		$this->reason = $reason;
@@ -100,18 +110,21 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setShippingDetails description]
-	 * @param [type] $shipping_details [description]
+	 * setter for details
+	 * @param object
+	 * @return object
 	 */
 	public function setDetails($details){
 		$this->details = $details;
+		$this->rules['details'] = $details;
 
 		return $this;
 	}
 
 	/**
-	 * [setPaymentMethod description]
-	 * @param [type] $method [description]
+	 * setter for payment method
+	 * @param string
+	 * @return object
 	 */
 	public function setPaymentMethod($method){
 		$this->payment_method = $method;
@@ -121,8 +134,9 @@ class Setter implements BaseSetter{
 	}
 	
 	/**
-	 * [setReturnUrl description]
-	 * @param [type] $return_url [description]
+	 * setter for return url
+	 * @param string
+	 * @return object
 	 */
 	public function setReturnUrl($return_url){
 		$this->return_url = $return_url;
@@ -132,17 +146,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setExtraParam description]
-	 * @param array $param [description]
-	 */
-	public function setExtraParam($param){
-		$this->extra_param = $param;
-		return $this;
-	}
-
-	/**
-	 * [setCancelUrl description]
-	 * @param [type] $cancel_url [description]
+	 * setter for cancel url
+	 * @param string
+	 * @return object
 	 */
 	public function setCancelUrl($cancel_url){
 		$this->cancel_url = $cancel_url;
@@ -152,8 +158,19 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setItemName description]
-	 * @param [type] $item_name [description]
+	 * setter for extra parameters
+	 * @param object
+	 * @return object
+	 */
+	public function setExtraParam($param){
+		$this->extra_param = $param;
+		return $this;
+	}
+
+	/**
+	 * setter for item name
+	 * @param string
+	 * @return object
 	 */
 	public function setItemName($item_name){
 		$this->item_name = $item_name;
@@ -163,8 +180,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setInvoiceNumber description]
-	 * @param [type] $unique_invoice_num [description]
+	 * setter for invoice number
+	 * @param  alpha numeric
+	 * @return object
 	 */
 	public function setInvoiceNumber($unique_invoice_num){
 		$this->unique_invoice_num = $unique_invoice_num;
@@ -174,8 +192,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setDescription description]
-	 * @param [type] $description [description]
+	 * setter for description
+	 * @param string
+	 * @return object
 	 */
 	public function setDescription($description){
 		$this->description = $description;
@@ -185,8 +204,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setCurrency description]
-	 * @param [type] $currency [description]
+	 * setter for currency
+	 * @param string
+	 * @return object
 	 */
 	public function setCurrency($currency){
 		$this->currency = $currency;
@@ -196,8 +216,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setQuantity description]
-	 * @param [type] $quantity [description]
+	 * setter for quantity
+	 * @param integer
+	 * @return object
 	 */
 	public function setQuantity($quantity){
 		$this->quantity = $quantity;
@@ -207,8 +228,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setTax description]
-	 * @param [type] $tax [description]
+	 * setter for tax
+	 * @param number
+	 * @return object
 	 */
 	public function setTax($tax){
 		$this->tax = $tax;
@@ -218,10 +240,10 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * Payment intent.
- * Valid Values: ["sale", "authorize", "order"] : default -> sale
-	 * @param  string $intent [description]
-	 * @return [type]         [description]
+	 * setter for payment intent
+ 	 * Valid Values: ["sale", "authorize", "order"] : default -> sale
+	 * @param  string
+	 * @return object
 	 */
 	public function setIntent($intent = 'sale'){
 		$this->intent = $intent;
@@ -231,8 +253,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setTotal description]
-	 * @param [type] $total [description]
+	 * setter for total
+	 * @param number
+	 * @return object
 	 */
 	public function setTotal($total){
 		$this->total = $total;
@@ -241,6 +264,11 @@ class Setter implements BaseSetter{
 		return $this;
 	}
 
+	/**
+	 * setter for sub-total
+	 * @param number
+	 * @return object
+	 */
 	public function setSubTotal($subtotal){
 		$this->subtotal = $subtotal;
 		$this->rules['subtotal'] = $subtotal;
@@ -249,8 +277,9 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [setPrice description]
-	 * @param [type] $price [description]
+	 * setter for price
+	 * @param number
+	 * @return object
 	 */
 	public function setPrice($price){
 		$this->price = $price;
@@ -260,158 +289,160 @@ class Setter implements BaseSetter{
 	}
 
 	/**
-	 * [getTax description]
-	 * @return [type] [description]
+	 * getter for tax
+	 * @return object
 	 */
 	public function getTax(){
 		return !empty($this->tax) ? $this->tax : 0.0;
 	}
 
 	/**
-	 * [getIntent description]
-	 * 
-	 * @return [type] [description]
+	 * getter for intent
+	 * @return object
 	 */
 	public function getIntent(){
 		return !empty($this->intent) ? $this->intent : 'sale';
 	}
 
 	/**
-	 * [getDescription description]
-	 * @return [type] [description]
+	 * getter for description
+	 * @return object
 	 */
 	public function getDescription(){
 		return !empty($this->description) ? $this->description : 'Default description.';
 	}
 
 	/**
-	 * [getInvoiceNumber description]
-	 * @return [type] [description]
+	 * getter for invoice number
+	 * @return object
 	 */
 	public function getInvoiceNumber(){
 		return !empty($this->unique_invoice_num) ? $this->unique_invoice_num : uniqid();
 	}
 
 	/**
-	 * [getTotal description]
-	 * @return [type] [description]
+	 * getter for total
+	 * @return object
 	 */
 	public function getTotal(){
 		return !empty($this->total) ? $this->total : $this->price;
 	}
 
 	/**
-	 * [getTotal description]
-	 * @return [type] [description]
+	 * getter for subtotal
+	 * @return object
 	 */
 	public function getSubTotal(){
 		return !empty($this->subtotal) ? $this->subtotal : $this->price;
 	}
 
 	/**
-	 * [getPaymentMethod description]
-	 * @return [type] [description]
+	 * getter for payment method
+	 * @return object
 	 */
 	public function getPaymentMethod(){
 		return $this->payment_method;
 	}
 
 	/**
-	 * [getQuantity description]
-	 * @return [type] [description]
+	 * getter for quantity
+	 * @return object
 	 */
 	public function getQuantity(){
 		return !empty($this->quantity) ? $this->quantity : 1;
 	}
 
 	/**
-	 * [getItemName description]
-	 * @return [type] [description]
+	 * getter for item name
+	 * @return object
 	 */
 	public function getItemName(){
 		return $this->item_name;
 	}
 
 	/**
-	 * [getCurrency description]
-	 * @return [type] [description]
+	 * getter for currency
+	 * @return object
 	 */
 	public function getCurrency(){
 		return !empty($this->currency) ? $this->currency : 'USD';
 	}
 
 	/**
-	 * [getPrice description]
-	 * @return [type] [description]
+	 * getter for price
+	 * @return object
 	 */
 	public function getPrice(){
 		return $this->price;
 	}
 
+	/**
+	 * getter for reason
+	 * @return object
+	 */
 	public function getReason(){
 		return $this->reason;
 	}
 
 	/**
-	 * [getCancelUrl description]
-	 * @return [type] [description]
+	 * getter for cancel url
+	 * @return object
 	 */
 	public function getCancelUrl(){
 		return $this->cancel_url;
 	}
 
 	/**
-	 * [getReturnUrl description]
-	 * @return [type] [description]
+	 * getter for return url
+	 * @return object
 	 */
 	public function getReturnUrl(){
 		return $this->return_url;
 	}
 	
 	/**
-	 * [getType description]
-	 * @param  [type] $type [description]
-	 * @return [type]       [description]
+	 * getter for type
+	 * @return object
 	 */
-	public function getType(	){
+	public function getType(){
 		return !empty($this->type) ? $this->type : 'visa';
 	}
 
 	/**
-	 * [getExtraParam description]
-	 * @return [type] [description]
+	 * getter for extra param
+	 * @return object
 	 */
 	public function getExtraParam(){
 		return !empty($this->extra_param) ? $this->extra_param : false;
 	}
 
 	/**
-	 * [getShippingDetails description]
-	 * @return [type] [description]
+	 * getter for extra param
+	 * @return object
 	 */
 	public function getShippingDetails(){
 		return $this->shipping_details;
 	}
 
 	/**
-	 * [getShippingDetails description]
-	 * @return [type] [description]
+	 * getter for card
+	 * @return object
 	 */
 	public function getCard(){
 		return $this->card;
 	}
 
 	/**
-	 * [getShippingDetails description]
-	 * @return [type] [description]
+	 * getter for amount
+	 * @return object
 	 */
 	public function getAmount(){
 		return $this->amount;
 	}
 
 	/**
-	 * [getShippingDetails description]
-	 * @return [type] [description]
+	 * getter for details
+	 * @return object
 	 */
 	public function getDetails(){
 		return $this->details;
@@ -419,7 +450,8 @@ class Setter implements BaseSetter{
 
 
 	/**
-	 * [setRules description]
+	 * setter for rules
+	 * used to get all the set parameters
 	 */
 	public function setRules(){
 		$this->rules = [
@@ -434,5 +466,27 @@ class Setter implements BaseSetter{
 			'description'		=> $this->getDescription(),
 			'payment_method'	=> $this->getPaymentMethod(),
 		];
+	}
+
+	/**
+	 * getter for rules
+	 * @return object
+	 */
+	public function getRules(){
+		$var = !empty($this->rules) ? $this->rules : [];
+
+    	foreach ($var as $key1 => $val1) {
+    		if(is_object($val1)){
+    			foreach ($this->rules[$key1] as $key2 => $val2) {
+    				$this->rules[$key2] = $val2;
+    			}
+    		}
+
+    		if(!is_object($val1)){
+    			$this->rules[$key1] = $val1;
+    		}
+    	}
+
+    	return $this->rules;
 	}
 }

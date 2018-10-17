@@ -3,155 +3,156 @@
 namespace Shahrukh\Payments\Contracts;
 
 /**
- * 
+ * Base setter contract for all the implemented payment gateways
  */
 interface BaseSetter{
 	/**
-	 * [setPaymentMethod description]
-	 * @param [type] $method [description]
+	 * setter for payment method
+	 * @param string
+	 * @return object
 	 */
 	public function setPaymentMethod($method);
-	
+
 	/**
-	 * [getPrice description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getPrice();
-	
-	/**
-	 * [getCancelUrl description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getCancelUrl();
-	
-	/**
-	 * [getReturnUrl description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getReturnUrl();
-	
-	/**
-	 * [getExtraParam description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getExtraParam();
-	
-	/**
-	 * [getCurrency description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getCurrency();
-	
-	/**
-	 * [getItemName description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getItemName();
-	
-	/**
-	 * [getQuantity description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getQuantity();
-	
-	/**
-	 * [getTotal description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getTotal();
-	
-	/**
-	 * [getInvoiceNumber description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getInvoiceNumber();
-	
-	/**
-	 * [getDescription description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getDescription();
-	
-	/**
-	 * [getTax description]
-	 * @param  [type] $method [description]
-	 * @return [type]         [description]
-	 */
-	public function getTax();
-	
-	/**
-	 * [setPrice description]
-	 * @param [type] $method [description]
+	 * setter for price
+	 * @param number
+	 * @return object
 	 */
 	public function setPrice($method);
 	
 	/**
-	 * [setTotal description]
-	 * @param [type] $method [description]
+	 * setter for total
+	 * @param number
+	 * @return object
 	 */
 	public function setTotal($method);
 	
 	/**
-	 * [setTax description]
-	 * @param [type] $method [description]
+	 * setter for tax
+	 * @param number
+	 * @return object
 	 */
 	public function setTax($method);
 	
 	/**
-	 * [setQuantity description]
-	 * @param [type] $method [description]
+	 * setter for quentity
+	 * @param integer
+	 * @return object
 	 */
 	public function setQuantity($method);
 	
 	/**
-	 * [setCurrency description]
-	 * @param [type] $method [description]
+	 * setter for currency
+	 * @param string
+	 * @return object
 	 */
 	public function setCurrency($method);
 	
 	/**
-	 * [setDescription description]
-	 * @param [type] $method [description]
+	 * setter for decription
+	 * @param string
+	 * @return object
 	 */
 	public function setDescription($method);
 	
 	/**
-	 * [setInvoiceNumber description]
-	 * @param [type] $method [description]
+	 * setter for invoice number
+	 * @param integer
+	 * @return object
 	 */
 	public function setInvoiceNumber($method);
 	
 	/**
-	 * [ItemName description]
-	 * @param [type] $method [description]
+	 * setter for item name
+	 * @param string
+	 * @return object
 	 */
 	public function	setItemName($method);
 	
 	/**
-	 * [setCancelUrl description]
-	 * @param [type] $method [description]
+	 * setter for cancel url
+	 * @param string
+	 * @return object
 	 */
 	public function setCancelUrl($method);
 	
 	/**
-	 * [setExtraParam description]
-	 * @param [type] $method [description]
+	 * setter for extra parameters
+	 * @param object
+	 * @return object
 	 */
 	public function setExtraParam($extra_param);
 	
 	/**
-	 * [setReturnUrl description]
-	 * @param [type] $method [description]
+	 * setter for reurn url
+	 * @param string
+	 * @return object
 	 */
 	public function setReturnUrl($method);
+
+	/**
+	 * getter for price
+	 * @return object
+	 */
+	public function getPrice();
+	
+	/**
+	 * getter for cancel url
+	 * @return object
+	 */
+	public function getCancelUrl();
+	
+	/**
+	 * getter for return url
+	 * @return object
+	 */
+	public function getReturnUrl();
+	
+	/**
+	 * getter for extra param
+	 * @return object
+	 */
+	public function getExtraParam();
+	
+	/**
+	 * getter for currency
+	 * @return object
+	 */
+	public function getCurrency();
+	
+	/**
+	 * getter for item name
+	 * @return object
+	 */
+	public function getItemName();
+	
+	/**
+	 * getter for quantity
+	 * @return object
+	 */
+	public function getQuantity();
+	
+	/**
+	 * getter for total
+	 * @return object
+	 */
+	public function getTotal();
+	
+	/**
+	 * getter for invoice number
+	 * @return object
+	 */
+	public function getInvoiceNumber();
+	
+	/**
+	 * getter for description
+	 * @return object
+	 */
+	public function getDescription();
+	
+	/**
+	 * getter for tax
+	 * @return object
+	 */
+	public function getTax();	
 }
