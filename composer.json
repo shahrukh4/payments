@@ -12,8 +12,10 @@
     "homepage": "https://github.com/shahrukh/payments",
     "keywords": ["Laravel", "Payments"],
     "require": {
+        "php": ">=5.3.0",
         "illuminate/support": "~5",
-        "cartalyst/stripe-laravel": "7.0.*"
+        "cartalyst/stripe-laravel": "7.0.*",
+        "anouar/paypalpayment": ">=3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~7.0",

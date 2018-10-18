@@ -29,10 +29,8 @@ class PayPal extends Setter implements PPPayment{
 	 * Initialising the class with PatPal credentials
 	 */
 	public function __construct(){
-		/*
-		setup PayPal api context
-		 */
-        $this->_api_context = Paypalpayment::ApiContext(config('payments.paypal_payment.account.client_id'), config('payments.paypal_payment.account.client_secret'));
+		//setup PayPal api context
+		$this->_api_context = Paypalpayment::ApiContext(config('payments.paypal_payment.account.client_id'), config('payments.paypal_payment.account.client_secret'));
 	}
 
 	/*
@@ -42,12 +40,12 @@ class PayPal extends Setter implements PPPayment{
 	|------------------------------------------------------
 	| @var line1 			: apha_numeric
 	| @var line2 			: apha_numeric
-	| @var city				: string
+	| @var city 			: string
 	| @var state			: string
 	| @var postal_code		: integer
 	| @var country_code 	: integer
 	| @var phone 			: integer
-	| @var recipient_name 	: string
+	| @var recipient_name	: string
 	| @var type				: string
 	| @var number			: integer
 	| @var expire_month 	: integer

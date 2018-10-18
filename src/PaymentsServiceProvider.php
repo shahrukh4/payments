@@ -45,8 +45,17 @@ class PaymentsServiceProvider extends ServiceProvider{
         });*/
 
         $this->app->bind(Payment::class, function ($app) {
-            //return new StripePay();
-            return new PayPal();
+            switch(config('payments.payment_type')){
+                //in case of paypal
+                case 'paypal' : return new PayPal();
+                break;
+
+                //in case of stripe
+                case 'stripe' : return new StripePay();
+                break;
+            }
+            
+            
         });
 
         $this->app->alias(Payment::class, 'Payment');

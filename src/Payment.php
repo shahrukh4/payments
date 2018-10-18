@@ -19,10 +19,10 @@ interface Payment{
 	/**
 	 * invoice of payement made
 	 */
-	public function invoice();
+	public function invoice($payment_id);
 
 	/**
 	 * refund of transaction made
 	 */
-	public function refund();
+	public function refund($transaction_id);
 }

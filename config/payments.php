@@ -1,6 +1,7 @@
 <?php
 
 return [
+	'payment_type' => env('PAYMENT_TYPE', 'paypal'),
     'stripe' => [
         'key'       => env('STRIPE_KEY'),
         'secret'    => env('STRIPE_SECRET'),
