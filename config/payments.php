@@ -8,7 +8,7 @@ return [
     ],
     'paypal_payment' => [
     	# Define your application mode here
-	    'mode' => env('PAYPAL_MODE', 'sandbox'),
+	    'mode' => env('PAYPAL_MODE', 'sandbox'),  //"sanbox" for testing and "live" for production
 
 	    # Account credentials from developer portal
 	    'account' => [

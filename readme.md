@@ -27,6 +27,19 @@ Please see the [changelog](changelog.md) for more information on what has change
 $ composer test
 ```
 
+## Environment
+
+a). Just change the environment from `env` for PayPal *sanbox* for testing and *live* for production, in your .env 
+
+```
+PAYPAL_MODE = sandbox/live
+```
+
+b). For Stripe just change the credentials of live and everything will be fine.
+
+
+
+
 ## Contributing
 
 Please see [contributing.md](contributing.md) for details and a todolist.
@@ -37,7 +50,7 @@ If you discover any security related issues, please email shahrukh.anwar@hestabi
 
 ## Credits
 
-- [Shahrukh Anwar][link-author]
+- [Shahrukh Anwar][https://stackoverflow.com/users/8473036/shahrukh-anwar]
 - [All Contributors][link-contributors]
 
 ## License

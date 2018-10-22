@@ -36,8 +36,8 @@ class Setter implements BaseSetter{
 	protected $description;
 	protected $expire_month;
 	protected $payment_method;
-	protected $unique_invoice_num;
 	protected $shipping_details;
+	protected $unique_invoice_num;
 
 
 	/**

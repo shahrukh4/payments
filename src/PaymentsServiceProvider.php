@@ -39,11 +39,6 @@ class PaymentsServiceProvider extends ServiceProvider{
     public function register(){
         $this->mergeConfigFrom(__DIR__.'/../config/payments.php', 'payments');
 
-        // Register the service the package provides.
-        /*$this->app->singleton('payments', function ($app) {
-            return new Payments;
-        });*/
-
         $this->app->bind(Payment::class, function ($app) {
             switch(config('payments.payment_type')){
                 //in case of paypal
@@ -53,9 +48,7 @@ class PaymentsServiceProvider extends ServiceProvider{
                 //in case of stripe
                 case 'stripe' : return new StripePay();
                 break;
-            }
-            
-            
+            }            
         });
 
         $this->app->alias(Payment::class, 'Payment');
@@ -69,9 +62,7 @@ class PaymentsServiceProvider extends ServiceProvider{
     public function provides()
     {
         return [
-            'Payment'
-            //'stripe', 
-            //'stripe.config',
+            'Payment',
         ];
     }
     
@@ -104,36 +95,5 @@ class PaymentsServiceProvider extends ServiceProvider{
 
         // Registering package commands.
         // $this->commands([]);
-    }
-
-    /**
-     * Register the Stripe API class.
-     *
-     * @return void
-     */
-    protected function registerStripe(){
-        $this->app->singleton('stripe', function ($app) {
-            $config     = $app['config']->get('services.stripe');
-            $secret     = isset($config['secret']) ? $config['secret'] : null;
-            $version    = isset($config['version']) ? $config['version'] : null;
-
-            return new Stripe($secret, $version);
-        });
-
-        $this->app->alias('stripe', 'Cartalyst\Stripe\Stripe');
-    }
-
-    /**
-     * Register the config class.
-     *
-     * @return void
-     */
-    protected function registerConfig(){
-        $this->app->singleton('stripe.config', function ($app) {
-            return $app['stripe']->getConfig();
-        });
-
-        $this->app->alias('stripe.config', 'Cartalyst\Stripe\Config');
-        $this->app->alias('stripe.config', 'Cartalyst\Stripe\ConfigInterface');
     }
 }

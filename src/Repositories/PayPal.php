@@ -2,8 +2,7 @@
 
 namespace Shahrukh\Payments\Repositories;
 
-use Validator;
-use Paypalpayment;
+use Validator;	
 use PayPal\Api\Sale;
 use PayPal\Api\Item;
 use PayPal\Api\Payer;
@@ -13,9 +12,11 @@ use PayPal\Api\Payment;
 use PayPal\Api\ItemList;
 use PayPal\Api\CreditCard;
 use PayPal\Api\Transaction;
+use PayPal\Rest\ApiContext;
 use PayPal\Api\RedirectUrls;
 use Illuminate\Http\Request;
 use Shahrukh\Payments\Handlers\Setter;
+use Anouar\Paypalpayment\PaypalPayment;
 use Shahrukh\Payments\Payment as PPPayment;
 
 /*
@@ -29,8 +30,29 @@ class PayPal extends Setter implements PPPayment{
 	 * Initialising the class with PatPal credentials
 	 */
 	public function __construct(){
+		$config = [
+            'mode' => config('payments.paypal_payment.mode'),
+
+            'account' => [
+                'client_id' => config('payments.paypal_payment.account.client_id'),
+                'client_secret' => config('payments.paypal_payment.account.client_secret'),
+            ],
+
+            'http' => [
+                'connection_time_out' => config('payments.paypal_payment.http.connection_time_out'),
+            ],
+
+            'log' => [
+                'log_enabled' => config('payments.paypal_payment.log.log_enabled'),
+                'file_name' => config('payments.paypal_payment.log.file_name'),
+                'log_level' => config('payments.paypal_payment.log.log_level'),
+            ],
+        ];
+
 		//setup PayPal api context
-		$this->_api_context = Paypalpayment::ApiContext(config('payments.paypal_payment.account.client_id'), config('payments.paypal_payment.account.client_secret'));
+		$this->paypal = new Paypalpayment($config);
+
+		$this->_api_context = $this->paypal->apiContext(config('payments.paypal_payment.account.client_id'), config('payments.paypal_payment.account.client_secret'));
 	}
 
 	/*
@@ -173,12 +195,12 @@ class PayPal extends Setter implements PPPayment{
 				return $validator->messages()->toArray();
 			}
 
-	        $payer = Paypalpayment::payer();
+	        $payer = $this->paypal->payer();//Paypalpayment::payer();
 	        $payer->setPaymentMethod($this->getPaymentMethod());
 
 	        //if card_details provided
 	        if(!empty($this->getCard())){
-		        $funding_instrument = Paypalpayment::fundingInstrument();
+		        $funding_instrument = $this->paypal->fundingInstrument();//Paypalpayment::fundingInstrument();
 		        $funding_instrument->setCreditCard($this->getCard()); 		//setting card details
 		    }
 
@@ -191,7 +213,7 @@ class PayPal extends Setter implements PPPayment{
 	         * Collecting item's details
 	         * @var object
 	         */
-	        $item = Paypalpayment::item();
+	        $item = $this->paypal->item();//Paypalpayment::item();
 	        $item->setName($this->getItemName())
             ->setDescription($this->getDescription())
             ->setCurrency($this->getCurrency())
@@ -199,7 +221,7 @@ class PayPal extends Setter implements PPPayment{
             ->setTax($this->getTax())
             ->setPrice($this->getPrice());
 
-	        $itemList = Paypalpayment::itemList();
+	        $itemList = $this->paypal->itemList();//Paypalpayment::itemList();
 	        $itemList->setItems([ $item ]);
 	        
 	        //if shipping details are provided
@@ -208,7 +230,7 @@ class PayPal extends Setter implements PPPayment{
 	        }
 
 			//Payment Amount
-	        $amount = Paypalpayment::amount();
+	        $amount = $this->paypal->amount();//Paypalpayment::amount();
 	        $amount->setCurrency($this->getCurrency())
             ->setTotal($this->getTotal());
             
@@ -221,13 +243,13 @@ class PayPal extends Setter implements PPPayment{
              * Transaction details
              * @var object
              */
-	        $transaction = Paypalpayment::transaction();
+	        $transaction = $this->paypal->transaction();//Paypalpayment::transaction();
 	        $transaction->setAmount($amount)
             ->setItemList($itemList)
             ->setDescription($this->getDescription())
             ->setInvoiceNumber($this->getInvoiceNumber());
 
-	        $payment = Paypalpayment::payment();
+	        $payment =  $this->paypal->payment();//Paypalpayment::payment();
 
 	        /**
 	         * If user have Non-US based account, then the redirect URLs must be given
@@ -290,6 +312,7 @@ class PayPal extends Setter implements PPPayment{
 	         */
 	        $approval_url = $payment->getApprovalLink();
 	        header("Location: {$approval_url}");
+	        exit();
 		}
 		catch(\Exception $e){
 			return $e;
@@ -310,7 +333,7 @@ class PayPal extends Setter implements PPPayment{
 	*/
 	public function invoice($payment_id){
 		try{			
-			return Paypalpayment::getById($payment_id, $this->_api_context);	
+			return  $this->paypal->getById($payment_id, $this->_api_context);	
 		}
 		catch(\Exception $e){
 			return $e;
@@ -329,14 +352,15 @@ class PayPal extends Setter implements PPPayment{
 	| Below are the example how you can set the objects
 	|
 	| $transaction_id = '3S7574554G079694D'; : Required(fetch this id, when you are making transaction and store)
-	| $refund = \Payment::setAmount(1)
-	| ->setReason('to refund the amount reason')
-	| ->refund($transaction_id); 
+	| $refund = \Payment::setAmount(0.11)
+    | ->setCurrency('USD')
+    | ->setReason('to refund the amount reason')
+    | ->refund($transaction_id);  
 	*/
 	public function refund($transaction_id){
 		try{
 	        $amt = new Amount();
-			$amt->setTotal($this->getTotal()) 		
+			$amt->setTotal($this->getAmount()) 		//in paypal its 'total', but we are using 'amount' for the sake of simplicity
 			->setCurrency($this->getCurrency());
 
 			$refund = new Refund();
