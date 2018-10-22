@@ -312,6 +312,7 @@ class PayPal extends Setter implements PPPayment{
 	         */
 	        $approval_url = $payment->getApprovalLink();
 	        header("Location: {$approval_url}");
+	        
 	        exit();
 		}
 		catch(\Exception $e){
