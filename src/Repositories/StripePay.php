@@ -28,7 +28,7 @@ class StripePay extends Setter implements Payment{
 	|--------------------------------------------------------------------------
 	| Below is the example, how you can set the objects
 	| //initialising the card object
-	| $card = Payment::card();
+	| $card = \Payment::card();
 	| $card->setNumber(4242424242424242) 	: integer (Required)
 	| ->setExpireYear(2020) 				: integer (Required)
 	| ->setExpireMonth(06) 					: integer (Required)

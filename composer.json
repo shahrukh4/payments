@@ -9,7 +9,7 @@
         }
     ],
     "homepage": "https://github.com/shahrukh/payments",
-    "keywords": ["Laravel", "Payments"],
+    "keywords": ["Laravel", "Payments", "PayPal", "Stripe", "Payment Gateway", "Multi Payment Gateways"],
     "require": {
         "php": ">=5.3.0",
         "illuminate/support": "~5",
