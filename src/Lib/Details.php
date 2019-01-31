@@ -2,12 +2,7 @@
 
 namespace Shahrukh\Payments\Lib;
 
-/*
-|--------------------------------------------------------------------------
-| This class is used to set and get various details related to payment
-| Created By- Shahrukh Anwar(08-06-2018)
-|--------------------------------------------------------------------------
-*/
+
 class Details{
 	/**
 	 * setter for shipping charge

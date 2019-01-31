@@ -5,7 +5,7 @@ namespace Shahrukh\Payments\Lib;
 /*
 |--------------------------------------------------------------------------
 | This class is used to set and get various card details related to payment
-| Created By- Shahrukh Anwar(08-06-2018)
+| Created By- Shahrukh Anwar(30-10-2018)
 |--------------------------------------------------------------------------
 */
 class Card{
@@ -27,6 +27,17 @@ class Card{
 	 */
 	public function setLastname($last_name){
 		$this->last_name = $last_name;
+
+		return $this;
+	}
+
+	/**
+	 * setter for name
+	 * @param string
+	 * @return object
+	 */
+	public function setName($name){
+		$this->name = $name;
 
 		return $this;
 	}
@@ -102,6 +113,14 @@ class Card{
 	 */
 	public function getLastname(){
 		return $this->last_name;
+	}
+
+	/**
+	 * getter for name
+	 * @return string
+	 */
+	public function getName(){
+		return $this->name;
 	}
 	
 	/**

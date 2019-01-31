@@ -2,12 +2,6 @@
 
 namespace Shahrukh\Payments\Lib;
 
-/*
-|--------------------------------------------------------------------------
-| This class is used to set and get various shipping details related to payment
-| Created By- Shahrukh Anwar(08-06-2018)
-|--------------------------------------------------------------------------
-*/
 class Shipping{
 	public $city;
 	public $line1;

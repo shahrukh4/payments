@@ -5,7 +5,7 @@
 [![Build Status][ico-travis]][link-travis]
 [![StyleCI][ico-styleci]][link-styleci]
 
-This is simple and easy to use Laravel package for using multiple payment gateways in a single place. Now you don't need to install multiple packages for multiple payment gateways.
+This is simple and easy to use Laravel and Lumen package for using multiple payment gateways in a single place. Now you don't need to install multiple packages for multiple payment gateways.
 Here we provide 2 of most widely used Payment Gateways (PayPal, Stripe) having easy to use methods such as `pay()`, `invoice()`, `refund()` etc.
 
 
@@ -13,15 +13,17 @@ Here we provide 2 of most widely used Payment Gateways (PayPal, Stripe) having e
 
 Via Composer
 
+for both `Laravel` and `Lumen`
+
 ``` bash
-$ composer require shahrukh/payments ">=1.2"
+$ composer require shahrukh/payments ">=1.1"
 ```
 
 or you can just add it in your composer.json
 
 ```
 "require": {
-    "shahrukh/payments": ">=1.2"
+    "shahrukh/payments": ">=1.1"
 }
 ```
 
@@ -30,37 +32,109 @@ Next, run `composer update`.
 
 ## Usage
 
-Add the ServiceProvider to your `config/app.php`
+i). For `Laravel` Add the ServiceProvider to your `config/app.php`
 
-a). Add in `providers` array,
+	a). Add in `providers` array,
 
-```
+	```
 
-'providers' => array(
-    // ...
+	'providers' => array(
+	    // ...
 
-    Shahrukh\Payments\PaymentsServiceProvider::class,
-);
+	    Shahrukh\Payments\PaymentsServiceProvider::class,
+	);
 
-```
+	```
 
-b). Add alias in `alias` array,
+	b). Add alias in `alias` array,
 
-```
+	```
 
-'aliases' => array(
-    // ...
+	'aliases' => array(
+	    // ...
 
-    'Payment'   => Shahrukh\Payments\Facades\Payment::class,
-);
+	    'Payment'   => Shahrukh\Payments\Facades\Payment::class,
+	);
 
-```
+	```
 
-c). Finally publish the package configurations by running the following command in `Terminal`
+	c). Finally publish the package configurations by running the following command in `Terminal`
 
-`php artisan vendor:publish --provider="Shahrukh\Payments\PaymentsServiceProvider"`
+	`php artisan vendor:publish --provider="Shahrukh\Payments\PaymentsServiceProvider"`
 
 
+ii). a). For `Lumen` make a directory named `config` and make a file there named `payments` and add the below code,
+
+	 ```
+	<?php
+
+	return [
+		'payment_type' => env('PAYMENT_TYPE', 'paypal'),
+	    'stripe' => [
+	        'key'       => env('STRIPE_KEY'),
+	        'secret'    => env('STRIPE_SECRET'),
+	    ],
+	    'paypal_payment' => [
+	    	# Define your application mode here
+		    'mode' => env('PAYPAL_MODE', 'sandbox'),  //"sanbox" for testing and "live" for production
+
+		    # Account credentials from developer portal
+		    'account' => [
+		        'client_id'		=> env('PAYPAL_CLIENT_ID', ''),
+		        'client_secret' => env('PAYPAL_CLIENT_SECRET', ''),
+		    ],
+
+		    # Connection Information
+		    'http' => [
+		        'connection_time_out' => 30,
+		        'retry' => 1,
+		    ],
+
+		    # Logging Information
+		    'log' => [
+		        'log_enabled' => true,
+
+		        # When using a relative path, the log file is created
+		        # relative to the .php file that is the entry point
+		        # for this request. You can also provide an absolute
+		        # path here
+		        'file_name' => '../PayPal.log',
+
+		        # Logging level can be one of FINE, INFO, WARN or ERROR
+		        # Logging is most verbose in the 'FINE' level and
+		        # decreases as you proceed towards ERROR
+		        'log_level' => 'FINE',
+		    ],
+	    ],
+	];
+	```
+
+	b). Make a directory inside in `app` named `Support` and make a file there named `helpers.php`. Now add the following lines in your `composer.json`.
+
+	```
+	"autoload": {
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/Support/helpers.php"
+        ]
+    },
+	```
+
+	c). Go to your `bootstrap/app.php` and uncomment line there `withEloquent()` and add the following lines,
+
+	```
+	$app->register(Shahrukh\Payments\PaymentsServiceProvider::class);
+
+	class_alias('Shahrukh\Payments\Facades\Payment', 'Payment');
+
+	$app->configure('payments');
+	```
 
 ## Important instructions
 
